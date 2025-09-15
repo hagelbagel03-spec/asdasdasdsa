@@ -297,8 +297,85 @@ const GoogleMapsView = ({ incident }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: 8,
   },
+  mapContainer: {
+    minHeight: 200,
+  },
+  mapPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    backgroundColor: '#f8f9fa',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#e9ecef',
+    margin: 16,
+    borderRadius: 12,
+  },
+  incidentTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  incidentAddress: {
+    fontSize: 14,
+    color: '#6c757d',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  coordinates: {
+    fontSize: 12,
+    color: '#6c757d',
+    marginTop: 8,
+    fontFamily: 'monospace',
+    textAlign: 'center',
+  },
+  priorityBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginTop: 12,
+  },
+  priorityText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  openMapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2196F3',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 12,
+  },
+  openMapButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  noLocationContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 32,
+    backgroundColor: '#f8f9fa',
+  },
+  noLocationText: {
+    fontSize: 14,
+    color: '#6c757d',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+});
   
   // Modern Header Styles
   modernHeaderContainer: {
