@@ -469,9 +469,10 @@ async def update_profile(user_updates: UserUpdate, current_user: User = Depends(
 
 @api_router.put("/incidents/{incident_id}/assign", response_model=Incident)
 async def assign_incident(incident_id: str, current_user: User = Depends(get_current_user)):
-    # Only police and admin can assign incidents
-    if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # Allow all authenticated users to assign incidents (removed admin restriction)
+    # Old restriction: Only police and admin can assign incidents
+    # if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
+    #     raise HTTPException(status_code=403, detail="Not authorized")
     
     updates = {
         'assigned_to': current_user.id,
