@@ -4603,6 +4603,64 @@ const MainApp = () => {
       flexDirection: 'row',
       gap: 8,
     },
+
+    // Map styles for incident details
+    mapThumbnail: {
+      borderRadius: 12,
+      overflow: 'hidden',
+      elevation: 4,
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+    },
+    mapPreview: {
+      backgroundColor: colors.surface,
+      padding: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 200,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: colors.border,
+      borderStyle: 'dashed',
+    },
+    mapPreviewTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.text,
+      marginTop: 12,
+      textAlign: 'center',
+    },
+    mapPreviewAddress: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginTop: 8,
+      textAlign: 'center',
+      paddingHorizontal: 16,
+    },
+    mapPreviewCoords: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginTop: 4,
+      textAlign: 'center',
+      fontFamily: 'monospace',
+    },
+    mapOpenButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      marginTop: 16,
+      gap: 6,
+    },
+    mapOpenButtonText: {
+      color: '#FFFFFF',
+      fontSize: 14,
+      fontWeight: '600',
+    },
   });
 
   const renderHomeScreen = () => (
