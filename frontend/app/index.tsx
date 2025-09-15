@@ -6591,15 +6591,7 @@ Beispielinhalt:
                 <View style={dynamicStyles.detailCard}>
                   <Text style={dynamicStyles.detailSectionTitle}>🎯 Aktionen</Text>
                   
-                  <TouchableOpacity
-                    style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
-                    onPress={() => showIncidentOnMap(selectedIncident)}
-                  >
-                    <Ionicons name="map" size={20} color="#FFFFFF" />
-                    <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
-                      📍 Auf Karte zeigen
-                    </Text>
-                  </TouchableOpacity>
+                {/* Auf Karte zeigen Button entfernt */}
 
                   <TouchableOpacity
                     style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
