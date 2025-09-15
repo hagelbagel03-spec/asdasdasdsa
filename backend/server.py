@@ -932,9 +932,10 @@ async def get_incident(incident_id: str, current_user: User = Depends(get_curren
 
 @api_router.put("/incidents/{incident_id}", response_model=Incident)
 async def update_incident(incident_id: str, updates: Dict[str, Any], current_user: User = Depends(get_current_user)):
-    # Only police and admin can update incidents
-    if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # Allow all authenticated users to update incidents (removed admin restriction)
+    # Old restriction: Only police and admin can update incidents
+    # if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
+    #     raise HTTPException(status_code=403, detail="Not authorized")
     
     updates['updated_at'] = datetime.utcnow()
     result = await db.incidents.update_one({"id": incident_id}, {"$set": updates})
