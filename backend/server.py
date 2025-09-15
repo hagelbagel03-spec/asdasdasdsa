@@ -256,7 +256,6 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         if user_identifier is None:
             raise credentials_exception
     except JWTError as e:
-        print(f"❌ JWT Error: {e}")
         raise credentials_exception
     
     # Try to find user by different methods
