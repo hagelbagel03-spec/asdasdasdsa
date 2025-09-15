@@ -667,9 +667,10 @@ async def delete_incident(incident_id: str, current_user: User = Depends(get_cur
 
 @api_router.put("/incidents/{incident_id}/complete", response_model=dict)
 async def complete_incident(incident_id: str, current_user: User = Depends(get_current_user)):
-    # Only police and admin can complete incidents
-    if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # Allow all authenticated users to complete incidents (removed admin restriction)
+    # Old restriction: Only police and admin can complete incidents
+    # if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
+    #     raise HTTPException(status_code=403, detail="Not authorized")
     
     # Get incident details first
     incident = await db.incidents.find_one({"id": incident_id})
