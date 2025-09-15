@@ -6739,10 +6739,54 @@ Beispielinhalt:
           </View>
 
           <View style={dynamicStyles.modalContent}>
-            <View style={dynamicStyles.formGroup}>
-              <Text style={dynamicStyles.formLabel}>
-                📩 Nachricht an {selectedRecipient?.username}
-              </Text>
+            {/* Benutzerauswahl wenn kein Empfänger gewählt */}
+            {!selectedRecipient && (
+              <View style={dynamicStyles.formGroup}>
+                <Text style={dynamicStyles.formLabel}>
+                  👥 Empfänger auswählen
+                </Text>
+                <ScrollView style={dynamicStyles.userSelectionContainer}>
+                  {Object.entries(usersByStatus).map(([status, users]) => (
+                    <View key={status}>
+                      <Text style={dynamicStyles.statusHeaderText}>
+                        {status} ({users.length})
+                      </Text>
+                      {users.map((user) => (
+                        <TouchableOpacity
+                          key={user.id}
+                          style={dynamicStyles.userSelectionItem}
+                          onPress={() => setSelectedRecipient(user)}
+                        >
+                          <Ionicons name="person-circle" size={40} color={colors.primary} />
+                          <View style={{ flex: 1, marginLeft: 12 }}>
+                            <Text style={dynamicStyles.userSelectionName}>
+                              {user.username}
+                            </Text>
+                            <Text style={dynamicStyles.userSelectionDetails}>
+                              {user.rank} • {user.department} • {user.service_number}
+                            </Text>
+                          </View>
+                          <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* Nachrichtenformular wenn Empfänger gewählt */}
+            {selectedRecipient && (
+              <View style={dynamicStyles.formGroup}>
+                <TouchableOpacity 
+                  style={dynamicStyles.recipientHeader}
+                  onPress={() => setSelectedRecipient(null)}
+                >
+                  <Ionicons name="arrow-back" size={20} color={colors.primary} />
+                  <Text style={dynamicStyles.formLabel}>
+                    📩 Nachricht an {selectedRecipient?.username}
+                  </Text>
+                </TouchableOpacity>
               <TextInput
                 style={[dynamicStyles.formInput, dynamicStyles.textArea]}
                 value={privateMessage}
