@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const GoogleMapsView = ({ incident }) => {
-  // Fixed colors instead of theme context
+const GoogleMapsView = ({ incident }: { incident: any }) => {
   const colors = {
     text: '#1a1a1a',
     textMuted: '#6c757d',
@@ -16,7 +15,6 @@ const GoogleMapsView = ({ incident }) => {
     success: '#28A745'
   };
 
-  // Get coordinates from incident
   const getCoordinates = () => {
     if (incident?.location?.lat && incident?.location?.lng) {
       return {
@@ -35,8 +33,7 @@ const GoogleMapsView = ({ incident }) => {
 
   const coordinates = getCoordinates();
 
-  // Get priority color
-  const getPriorityColor = (priority) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority?.toLowerCase()) {
       case 'high': return colors.error;
       case 'medium': return colors.warning;
