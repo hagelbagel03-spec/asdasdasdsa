@@ -1460,6 +1460,68 @@ const MainApp = () => {
     }
   };
 
+  // Report Status Update Functions - FIXED for 422 error
+  const updateReportStatus = async (reportId, newStatus, reportTitle) => {
+    try {
+      const config = token ? {
+        headers: { Authorization: `Bearer ${token}` }
+      } : {};
+      
+      console.log(`📊 Update Report Status: ${reportId} -> ${newStatus}`);
+      
+      // Get current report data first
+      const currentReport = reports.find(r => r.id === reportId) || selectedReport;
+      
+      // Send complete report data with updated status
+      const updateData = {
+        title: currentReport?.title || reportTitle,
+        content: currentReport?.content || '',
+        shift_date: currentReport?.shift_date || new Date().toISOString().split('T')[0],
+        status: newStatus
+      };
+      
+      console.log('📊 Sending update data:', updateData);
+      
+      await axios.put(`${API_URL}/api/reports/${reportId}`, updateData, config);
+      
+      const statusText = {
+        'in_progress': 'IN BEARBEITUNG',
+        'completed': 'ABGESCHLOSSEN', 
+        'archived': 'ARCHIVIERT'
+      }[newStatus] || newStatus.toUpperCase();
+      
+      Alert.alert('✅ Erfolg', `Bericht "${reportTitle}" wurde auf "${statusText}" gesetzt!`);
+      
+      // Reload reports
+      await loadReports();
+      
+      // Update selected report if it's currently shown
+      if (selectedReport && selectedReport.id === reportId) {
+        setSelectedReport(prev => ({
+          ...prev,
+          status: newStatus
+        }));
+      }
+      
+    } catch (error) {
+      console.error('❌ Report status update error:', error);
+      console.error('❌ Response data:', error.response?.data);
+      
+      let errorMsg = 'Status konnte nicht aktualisiert werden.';
+      if (error.response?.status === 422) {
+        errorMsg = 'Ungültige Daten. ' + (error.response?.data?.detail || 'Bitte versuchen Sie es erneut.');
+      } else if (error.response?.status === 404) {
+        errorMsg = 'Bericht nicht gefunden.';
+      } else if (error.response?.data?.detail) {
+        errorMsg = error.response.data.detail;
+      } else if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+      
+      Alert.alert('❌ Fehler', errorMsg);
+    }
+  };
+
   const showIncidentOnMap = (incident) => {
     setSelectedIncident(incident);
     setShowIncidentMap(true);
