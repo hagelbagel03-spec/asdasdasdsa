@@ -798,9 +798,10 @@ async def update_report(report_id: str, updated_data: ReportCreate, current_user
 @api_router.post("/persons", response_model=Person)
 async def create_person(person_data: PersonCreate, current_user: User = Depends(get_current_user)):
     """Erstelle eine neue Person in der Datenbank"""
-    # Only police and admin can create person entries
-    if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # Allow all authenticated users to create person entries (removed admin restriction)
+    # Old restriction: Only police and admin can create person entries
+    # if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
+    #     raise HTTPException(status_code=403, detail="Not authorized")
     
     person_dict = person_data.dict()
     person_dict['created_by'] = current_user.id
