@@ -4600,10 +4600,10 @@ const MainApp = () => {
                 ]}
                 onPress={() => {
                   console.log('🔍 Incident clicked:', incident);
-                  console.log('🔍 Setting selectedIncident and opening map modal');
+                  console.log('🔍 Setting selectedIncident and opening details modal');
                   setSelectedIncident(incident);
-                  setShowIncidentMap(true);
-                  console.log('🔍 Modal should now be visible');
+                  setShowIncidentModal(true);
+                  console.log('🔍 Details modal should now be visible');
                 }}
               >
                 <View style={[dynamicStyles.incidentIcon, 
