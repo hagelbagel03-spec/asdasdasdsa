@@ -44,7 +44,51 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
   const [sending, setSending] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const API_URL = "http://212.227.57.238:8001";
+  // Load messages when component mounts or view changes
+  React.useEffect(() => {
+    loadMessages();
+  }, [currentView, selectedChannelId, selectedUser]);
+
+  const loadMessages = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      let response;
+      if (currentView === 'chat' && selectedUser) {
+        // Load private messages
+        response = await axios.get(`${API_URL}/api/messages/private`, config);
+        // Filter for this specific conversation
+        const filteredMessages = response.data.filter(msg => 
+          (msg.sender_id === selectedUser.id && msg.recipient_id === user?.id) ||
+          (msg.sender_id === user?.id && msg.recipient_id === selectedUser.id)
+        ).map(msg => ({
+          ...msg,
+          isOwn: msg.sender_id === user?.id
+        }));
+        setMessages(filteredMessages);
+      } else {
+        // Load channel messages
+        response = await axios.get(`${API_URL}/api/messages?channel=${selectedChannelId}`, config);
+        const channelMessages = response.data.map(msg => ({
+          ...msg,
+          isOwn: msg.sender_id === user?.id
+        }));
+        setMessages(channelMessages);
+      }
+      
+      console.log('✅ Messages loaded:', response.data.length);
+    } catch (error) {
+      console.error('❌ Error loading messages:', error);
+      setMessages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Simple channels
   const channels = [
