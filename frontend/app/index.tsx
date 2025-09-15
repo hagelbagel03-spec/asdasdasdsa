@@ -694,6 +694,8 @@ const MainApp = () => {
   // Report/Berichte states
   const [reports, setReports] = useState([]);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showReportDetailModal, setShowReportDetailModal] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
   const [editingReport, setEditingReport] = useState(null);
   const [reportFormData, setReportFormData] = useState({
     title: '',
