@@ -4684,7 +4684,7 @@ const MainApp = () => {
     </ScrollView>
   );
 
-  // Render chat screen function - Simple fallback version
+  // Render chat screen function - Complete version with channels and users
   const renderChatScreen = () => {
     return (
       <View style={dynamicStyles.container}>
@@ -4693,10 +4693,76 @@ const MainApp = () => {
         </View>
         
         <ScrollView style={{ flex: 1, padding: 20 }}>
+          {/* Text Channels */}
           <View style={dynamicStyles.card}>
             <View style={dynamicStyles.cardHeader}>
               <Ionicons name="chatbubbles" size={24} color={colors.primary} />
-              <Text style={dynamicStyles.cardTitle}>Benutzer auswählen</Text>
+              <Text style={dynamicStyles.cardTitle}>TEXT CHANNELS</Text>
+            </View>
+            
+            <TouchableOpacity 
+              style={[dynamicStyles.reportCard, { backgroundColor: colors.surface }]}
+              onPress={() => {
+                setSelectedChannel('general');
+                setActiveTab('messages');
+              }}
+            >
+              <View style={dynamicStyles.reportHeader}>
+                <View style={dynamicStyles.reportMetadata}>
+                  <View style={dynamicStyles.reportAuthor}>
+                    <Ionicons name="chatbubbles" size={20} color="#5865F2" />
+                    <Text style={dynamicStyles.reportAuthorText}># allgemein</Text>
+                  </View>
+                  <Text style={dynamicStyles.reportDate}>Allgemeine Diskussion</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+              </View>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[dynamicStyles.reportCard, { backgroundColor: colors.surface }]}
+              onPress={() => {
+                setSelectedChannel('emergency');
+                setActiveTab('messages');
+              }}
+            >
+              <View style={dynamicStyles.reportHeader}>
+                <View style={dynamicStyles.reportMetadata}>
+                  <View style={dynamicStyles.reportAuthor}>
+                    <Ionicons name="warning" size={20} color="#F23F43" />
+                    <Text style={dynamicStyles.reportAuthorText}># notfall</Text>
+                  </View>
+                  <Text style={dynamicStyles.reportDate}>Notfall-Kommunikation</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+              </View>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[dynamicStyles.reportCard, { backgroundColor: colors.surface }]}
+              onPress={() => {
+                setSelectedChannel('service');
+                setActiveTab('messages');
+              }}
+            >
+              <View style={dynamicStyles.reportHeader}>
+                <View style={dynamicStyles.reportMetadata}>
+                  <View style={dynamicStyles.reportAuthor}>
+                    <Ionicons name="shield-checkmark" size={20} color="#57F287" />
+                    <Text style={dynamicStyles.reportAuthorText}># dienst</Text>
+                  </View>
+                  <Text style={dynamicStyles.reportDate}>Dienstliche Mitteilungen</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* Private Messages */}
+          <View style={dynamicStyles.card}>
+            <View style={dynamicStyles.cardHeader}>
+              <Ionicons name="person" size={24} color={colors.secondary} />
+              <Text style={dynamicStyles.cardTitle}>Private Nachrichten</Text>
             </View>
             
             {Object.entries(usersByStatus || {}).map(([status, users]) => (
@@ -4717,6 +4783,15 @@ const MainApp = () => {
                           <Text style={dynamicStyles.reportAuthorText}>
                             {officer.username}
                           </Text>
+                          <View style={[
+                            { 
+                              width: 8, 
+                              height: 8, 
+                              borderRadius: 4, 
+                              marginLeft: 8,
+                              backgroundColor: officer.is_online ? '#23A55A' : '#80848E'
+                            }
+                          ]} />
                         </View>
                         <Text style={dynamicStyles.reportDate}>
                           {officer.rank} • {officer.department}
@@ -4742,6 +4817,52 @@ const MainApp = () => {
                   Benutzer werden geladen...
                 </Text>
               </View>
+            )}
+          </View>
+
+          {/* Recent Messages */}
+          <View style={dynamicStyles.card}>
+            <View style={dynamicStyles.cardHeader}>
+              <Ionicons name="time" size={24} color={colors.warning} />
+              <Text style={dynamicStyles.cardTitle}>Letzte Nachrichten</Text>
+              <TouchableOpacity onPress={openAllMessagesModal}>
+                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+              </TouchableOpacity>
+            </View>
+            
+            {recentMessages.length === 0 ? (
+              <View style={dynamicStyles.emptyState}>
+                <Ionicons name="mail-open" size={64} color={colors.secondary} />
+                <Text style={dynamicStyles.emptyText}>Keine Nachrichten</Text>
+                <Text style={dynamicStyles.emptySubtext}>
+                  Sie haben noch keine privaten Nachrichten erhalten 📬
+                </Text>
+              </View>
+            ) : (
+              recentMessages.slice(0, 3).map((message) => (
+                <TouchableOpacity
+                  key={message.id}
+                  style={[dynamicStyles.reportCard, { marginBottom: 8 }]}
+                  onPress={() => openChatReply(message)}
+                >
+                  <View style={dynamicStyles.reportHeader}>
+                    <View style={dynamicStyles.reportMetadata}>
+                      <View style={dynamicStyles.reportAuthor}>
+                        <Ionicons name="mail" size={16} color={colors.secondary} />
+                        <Text style={dynamicStyles.reportAuthorText}>
+                          {message.sender_name}
+                        </Text>
+                      </View>
+                      <Text style={dynamicStyles.reportDate}>
+                        {new Date(message.created_at || message.timestamp).toLocaleString('de-DE')}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text style={dynamicStyles.reportContent} numberOfLines={2}>
+                    {message.content}
+                  </Text>
+                </TouchableOpacity>
+              ))
             )}
           </View>
         </ScrollView>
