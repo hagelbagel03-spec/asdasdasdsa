@@ -7259,6 +7259,161 @@ Beispielinhalt:
           </ScrollView>
         </SafeAreaView>
       </Modal>
+
+      {/* Report Details Modal with Status Actions */}
+      <Modal
+        visible={showReportDetailModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowReportDetailModal(false)}
+      >
+        <SafeAreaView style={dynamicStyles.container}>
+          <View style={dynamicStyles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowReportDetailModal(false)}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <Text style={dynamicStyles.modalTitle}>📊 Bericht Details</Text>
+            <View style={{ width: 24 }} />
+          </View>
+
+          <ScrollView style={dynamicStyles.modalContent} showsVerticalScrollIndicator={false}>
+            {selectedReport && (
+              <>
+                <View style={dynamicStyles.detailCard}>
+                  <Text style={dynamicStyles.detailSectionTitle}>📋 Bericht-Information</Text>
+                  
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>🚨 Titel:</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {selectedReport.title || 'Unbenannter Bericht'}
+                    </Text>
+                  </View>
+
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>👤 Autor:</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {selectedReport.author_name || 'Unbekannt'}
+                    </Text>
+                  </View>
+
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>📅 Schichtdatum:</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {selectedReport.shift_date ? new Date(selectedReport.shift_date).toLocaleDateString('de-DE') : 'Nicht angegeben'}
+                    </Text>
+                  </View>
+
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>🕒 Erstellt:</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {selectedReport.created_at ? new Date(selectedReport.created_at).toLocaleString('de-DE') : 'Unbekannt'}
+                    </Text>
+                  </View>
+
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>📊 Status:</Text>
+                    <Text style={[
+                      dynamicStyles.detailValue,
+                      {
+                        color: selectedReport.status === 'draft' ? colors.warning :
+                               selectedReport.status === 'in_progress' ? colors.primary :
+                               selectedReport.status === 'completed' ? colors.success :
+                               selectedReport.status === 'archived' ? colors.textMuted : 
+                               colors.text
+                      }
+                    ]}>
+                      {selectedReport.status === 'draft' ? '📝 Entwurf' :
+                       selectedReport.status === 'in_progress' ? '⚙️ In Bearbeitung' :
+                       selectedReport.status === 'completed' ? '✅ Abgeschlossen' :
+                       selectedReport.status === 'archived' ? '📦 Archiviert' :
+                       selectedReport.status === 'submitted' ? '📤 Eingereicht' : 
+                       selectedReport.status || 'Unbekannt'}
+                    </Text>
+                  </View>
+
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>📝 Inhalt:</Text>
+                    <Text style={[dynamicStyles.detailValue, { marginTop: 8 }]}>
+                      {selectedReport.content || 'Kein Inhalt verfügbar'}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={dynamicStyles.detailCard}>
+                  <Text style={dynamicStyles.detailSectionTitle}>🎯 Status-Aktionen</Text>
+                  
+                  {selectedReport.status !== 'in_progress' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
+                      onPress={() => {
+                        if (window.confirm(`⚙️ Status ändern\n\n"${selectedReport.title}" auf "IN BEARBEITUNG" setzen?`)) {
+                          updateReportStatus(selectedReport.id, 'in_progress', selectedReport.title);
+                        }
+                      }}
+                    >
+                      <Ionicons name="cog" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        ⚙️ IN BEARBEITUNG
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {selectedReport.status !== 'completed' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
+                      onPress={() => {
+                        if (window.confirm(`✅ Status ändern\n\n"${selectedReport.title}" auf "ABGESCHLOSSEN" setzen?`)) {
+                          updateReportStatus(selectedReport.id, 'completed', selectedReport.title);
+                        }
+                      }}
+                    >
+                      <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        ✅ ABGESCHLOSSEN
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {selectedReport.status !== 'archived' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.textMuted, marginBottom: 12 }]}
+                      onPress={() => {
+                        if (window.confirm(`📦 Status ändern\n\n"${selectedReport.title}" auf "ARCHIVIERT" setzen?`)) {
+                          updateReportStatus(selectedReport.id, 'archived', selectedReport.title);
+                        }
+                      }}
+                    >
+                      <Ionicons name="archive" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        📦 ARCHIVIERT
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {user?.role === 'admin' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.error }]}
+                      onPress={() => {
+                        if (window.confirm(`🗑️ Bericht löschen\n\n"${selectedReport.title}" wirklich löschen?`)) {
+                          // Add delete functionality if needed
+                          setShowReportDetailModal(false);
+                        }
+                      }}
+                    >
+                      <Ionicons name="trash" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        🗑️ Bericht löschen
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                <View style={{ height: 40 }} />
+              </>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };
