@@ -43,6 +43,7 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [unreadMessages, setUnreadMessages] = useState<{[key: string]: number}>({});
 
   const API_URL = "http://localhost:8001";
 
