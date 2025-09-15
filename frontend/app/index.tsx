@@ -5503,16 +5503,7 @@ const MainApp = () => {
                   
                   {/* Incident Action Buttons */}
                   <View style={dynamicStyles.incidentActions}>
-                    <TouchableOpacity
-                      style={[dynamicStyles.incidentActionBtn, { backgroundColor: colors.primary }]}
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        setSelectedIncident(incident);
-                        setShowIncidentModal(true);
-                      }}
-                    >
-                      <Ionicons name="eye" size={16} color="#FFFFFF" />
-                    </TouchableOpacity>
+                    {/* Karten/Auge-Button komplett entfernt */}
                     <TouchableOpacity
                       style={[dynamicStyles.incidentActionBtn, { backgroundColor: colors.success }]}
                       onPress={(e) => {
