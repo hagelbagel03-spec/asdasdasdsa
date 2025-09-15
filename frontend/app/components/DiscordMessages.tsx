@@ -22,7 +22,7 @@ interface DiscordMessagesProps {
   usersByStatus?: any; // Add usersByStatus prop
 }
 
-const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selectedChannel, theme }) => {
+const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selectedChannel, theme, usersByStatus }) => {
   const colors = theme?.colors || {
     primary: '#1E3A8A',
     background: '#F3F4F6',
