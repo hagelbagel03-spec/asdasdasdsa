@@ -1161,15 +1161,24 @@ async def create_first_user(user_data: UserCreate):
     # Create first admin user
     hashed_password = hash_password(user_data.password)
     user_dict = user_data.dict()
-    user_dict["password"] = hashed_password
+    user_dict["hashed_password"] = hashed_password  # Use consistent field name
+    user_dict.pop("password", None)  # Remove plain password
     user_dict["role"] = UserRole.ADMIN  # Force admin role for first user
     user_dict["id"] = str(uuid.uuid4())
     user_dict["created_at"] = datetime.utcnow()
+    user_dict["updated_at"] = datetime.utcnow()
+    user_dict["is_active"] = True
+    user_dict["status"] = "Im Dienst"
     
     await db.users.insert_one(user_dict)
     
     # Return user without password
-    user_dict.pop("password")
+    user_dict.pop("hashed_password", None)
+    
+    # Convert datetime objects to strings for JSON serialization
+    user_dict["created_at"] = user_dict["created_at"].isoformat()
+    user_dict["updated_at"] = user_dict["updated_at"].isoformat()
+    
     return {"message": "First admin user created successfully", "user": user_dict}
 
 # Database reset endpoint (DANGER!)
