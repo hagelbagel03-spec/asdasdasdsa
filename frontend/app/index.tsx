@@ -7361,84 +7361,18 @@ Beispielinhalt:
                 </View>
 
                 <View style={dynamicStyles.detailCard}>
-                  <Text style={dynamicStyles.detailSectionTitle}>🎯 Status-Aktionen</Text>
+                  <Text style={dynamicStyles.detailSectionTitle}>🎯 Aktionen</Text>
                   
-                  {user?.role === 'admin' && selectedReport.status !== 'in_progress' && (
-                    <TouchableOpacity
-                      style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
-                      onPress={() => {
-                        if (window.confirm(`⚙️ Status ändern\n\n"${selectedReport.title}" auf "IN BEARBEITUNG" setzen?`)) {
-                          updateReportStatus(selectedReport.id, 'in_progress', selectedReport.title);
-                        }
-                      }}
-                    >
-                      <Ionicons name="cog" size={20} color="#FFFFFF" />
-                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
-                        ⚙️ IN BEARBEITUNG
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {user?.role === 'admin' && selectedReport.status !== 'completed' && (
-                    <TouchableOpacity
-                      style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
-                      onPress={() => {
-                        if (window.confirm(`✅ Status ändern\n\n"${selectedReport.title}" auf "ABGESCHLOSSEN" setzen?`)) {
-                          updateReportStatus(selectedReport.id, 'completed', selectedReport.title);
-                        }
-                      }}
-                    >
-                      <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
-                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
-                        ✅ ABGESCHLOSSEN
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {user?.role === 'admin' && selectedReport.status !== 'archived' && (
-                    <TouchableOpacity
-                      style={[dynamicStyles.actionButton, { backgroundColor: colors.textMuted, marginBottom: 12 }]}
-                      onPress={() => {
-                        if (window.confirm(`📦 Status ändern\n\n"${selectedReport.title}" auf "ARCHIVIERT" setzen?`)) {
-                          updateReportStatus(selectedReport.id, 'archived', selectedReport.title);
-                        }
-                      }}
-                    >
-                      <Ionicons name="archive" size={20} color="#FFFFFF" />
-                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
-                        📦 ARCHIVIERT
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {user?.role === 'admin' && (
-                    <TouchableOpacity
-                      style={[dynamicStyles.actionButton, { backgroundColor: colors.error }]}
-                      onPress={() => {
-                        if (window.confirm(`🗑️ Bericht löschen\n\n"${selectedReport.title}" wirklich löschen?`)) {
-                          // Add delete functionality if needed
-                          setShowReportDetailModal(false);
-                        }
-                      }}
-                    >
-                      <Ionicons name="trash" size={20} color="#FFFFFF" />
-                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
-                        🗑️ Bericht löschen
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {user?.role !== 'admin' && (
-                    <View style={dynamicStyles.emptyState}>
-                      <Ionicons name="shield-checkmark" size={48} color={colors.textMuted} />
-                      <Text style={[dynamicStyles.emptyText, { color: colors.textMuted }]}>
-                        Nur Administratoren können den Status ändern
-                      </Text>
-                      <Text style={[dynamicStyles.emptySubtext, { color: colors.textMuted }]}>
-                        Kontaktieren Sie einen Admin für Status-Updates
-                      </Text>
-                    </View>
-                  )}
+                  {/* Alle Status-Update-Buttons entfernt - nur Anzeige */}
+                  <View style={dynamicStyles.emptyState}>
+                    <Ionicons name="information-circle" size={48} color={colors.textMuted} />
+                    <Text style={[dynamicStyles.emptyText, { color: colors.textMuted }]}>
+                      Bericht-Details
+                    </Text>
+                    <Text style={[dynamicStyles.emptySubtext, { color: colors.textMuted }]}>
+                      Verwenden Sie "Bearbeiten" zum Ändern des Berichts
+                    </Text>
+                  </View>
                 </View>
 
                 <View style={{ height: 40 }} />
