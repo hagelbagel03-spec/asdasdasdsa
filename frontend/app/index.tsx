@@ -4684,45 +4684,69 @@ const MainApp = () => {
     </ScrollView>
   );
 
-  // Render chat screen function - FIXED: Use DiscordMessages component
+  // Render chat screen function - Simple fallback version
   const renderChatScreen = () => {
-    // Debug usersByStatus
-    console.log('🔍 renderChatScreen called');
-    console.log('👥 usersByStatus available:', !!usersByStatus);
-    console.log('👥 usersByStatus keys:', Object.keys(usersByStatus || {}));
-    
-    // Fallback if DiscordMessages fails
-    try {
-      return (
-        <DiscordMessages 
-          user={user || { username: 'Test Beamter', id: 'test-123' }}
-          token={token || 'demo-token'}
-          selectedChannel="allgemein"
-          theme={{ colors, isDarkMode }}
-          usersByStatus={usersByStatus}
-        />
-      );
-    } catch (error) {
-      console.error('❌ DiscordMessages error:', error);
-      
-      // Simple fallback UI
-      return (
-        <View style={dynamicStyles.container}>
-          <View style={dynamicStyles.homeHeader}>
-            <Text style={dynamicStyles.userName}>💬 Nachrichten</Text>
-          </View>
-          <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center' }}>
-            <Ionicons name="chatbubbles" size={64} color={colors.textMuted} />
-            <Text style={{ color: colors.text, fontSize: 16, marginTop: 16 }}>
-              Nachrichten werden geladen...
-            </Text>
-            <Text style={{ color: colors.textMuted, fontSize: 14, marginTop: 8 }}>
-              Komponente wird initialisiert
-            </Text>
-          </View>
+    return (
+      <View style={dynamicStyles.container}>
+        <View style={dynamicStyles.homeHeader}>
+          <Text style={dynamicStyles.userName}>💬 Nachrichten</Text>
         </View>
-      );
-    }
+        
+        <ScrollView style={{ flex: 1, padding: 20 }}>
+          <View style={dynamicStyles.card}>
+            <View style={dynamicStyles.cardHeader}>
+              <Ionicons name="chatbubbles" size={24} color={colors.primary} />
+              <Text style={dynamicStyles.cardTitle}>Benutzer auswählen</Text>
+            </View>
+            
+            {Object.entries(usersByStatus || {}).map(([status, users]) => (
+              <View key={status}>
+                <Text style={[dynamicStyles.formLabel, { marginTop: 16, marginBottom: 8 }]}>
+                  {status} ({Array.isArray(users) ? users.length : 0})
+                </Text>
+                {Array.isArray(users) && users.map((officer) => (
+                  <TouchableOpacity
+                    key={officer.id}
+                    style={[dynamicStyles.reportCard, { marginBottom: 8 }]}
+                    onPress={() => openPrivateMessage(officer)}
+                  >
+                    <View style={dynamicStyles.reportHeader}>
+                      <View style={dynamicStyles.reportMetadata}>
+                        <View style={dynamicStyles.reportAuthor}>
+                          <Ionicons name="person-circle" size={20} color={colors.primary} />
+                          <Text style={dynamicStyles.reportAuthorText}>
+                            {officer.username}
+                          </Text>
+                        </View>
+                        <Text style={dynamicStyles.reportDate}>
+                          {officer.rank} • {officer.department}
+                        </Text>
+                      </View>
+                      <TouchableOpacity 
+                        style={[dynamicStyles.editButton, { backgroundColor: colors.secondary }]}
+                        onPress={() => openPrivateMessage(officer)}
+                      >
+                        <Ionicons name="chatbubble" size={16} color="#FFFFFF" />
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
+            
+            {Object.keys(usersByStatus || {}).length === 0 && (
+              <View style={dynamicStyles.emptyState}>
+                <Ionicons name="people" size={64} color={colors.textMuted} />
+                <Text style={dynamicStyles.emptyText}>Keine Benutzer verfügbar</Text>
+                <Text style={dynamicStyles.emptySubtext}>
+                  Benutzer werden geladen...
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    );
   };
   const renderIncidentScreen = () => {
     console.log('🔍 Rendering incident screen...');
