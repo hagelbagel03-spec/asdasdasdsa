@@ -4600,10 +4600,10 @@ const MainApp = () => {
                 ]}
                 onPress={() => {
                   console.log('🔍 Incident clicked:', incident);
-                  console.log('🔍 Setting selectedIncident and opening details modal');
+                  console.log('🔍 Setting selectedIncident and opening 🚨 Vorfall Details modal');
                   setSelectedIncident(incident);
-                  setShowIncidentModal(true);
-                  console.log('🔍 Details modal should now be visible');
+                  setShowIncidentDetailModal(true);
+                  console.log('🔍 🚨 Vorfall Details modal should now be visible');
                 }}
               >
                 <View style={[dynamicStyles.incidentIcon, 
