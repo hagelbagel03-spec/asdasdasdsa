@@ -281,37 +281,95 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 # Socket.IO events
 @sio.event
 async def connect(sid, environ):
-    print(f"Client {sid} connected")
+    print(f"🔗 Client {sid} connected")
 
 @sio.event
 async def disconnect(sid):
-    print(f"Client {sid} disconnected")
+    print(f"🔌 Client {sid} disconnected")
+    # Remove from user_sockets mapping
+    if sid in user_sockets:
+        user_id = user_sockets[sid]
+        del user_sockets[sid]
+        # Update online status
+        if user_id in online_users:
+            online_users[user_id]["socket_id"] = None
+
+@sio.event
+async def join_user_room(sid, user_id):
+    """Join user to their personal room for notifications"""
+    await sio.enter_room(sid, f"user_{user_id}")
+    user_sockets[sid] = user_id
+    if user_id in online_users:
+        online_users[user_id]["socket_id"] = sid
+    print(f"👤 User {user_id} joined personal room")
+
+@sio.event
+async def join_channel(sid, channel):
+    """Join a channel room"""
+    await sio.enter_room(sid, f"channel_{channel}")
+    print(f"📺 Socket {sid} joined channel: {channel}")
+
+@sio.event
+async def join_private_room(sid, data):
+    """Join private chat room between two users"""
+    user1 = data.get('user1')
+    user2 = data.get('user2')
+    # Create consistent room name regardless of order
+    users = sorted([user1, user2])
+    room_name = f"private_{users[0]}_{users[1]}"
+    await sio.enter_room(sid, room_name)
+    print(f"💬 Socket {sid} joined private room: {room_name}")
+
+@sio.event
+async def send_message(sid, data):
+    """Handle real-time message sending"""
+    try:
+        channel = data.get('channel')
+        content = data.get('content')
+        sender_id = data.get('sender_id')
+        recipient_id = data.get('recipient_id')
+        message_type = data.get('message_type', 'text')
+        
+        # Create message object
+        message_data = {
+            "id": str(uuid.uuid4()),
+            "content": content,
+            "sender_id": sender_id,
+            "channel": channel,
+            "timestamp": datetime.utcnow(),
+            "created_at": datetime.utcnow(),
+            "message_type": message_type
+        }
+        
+        if recipient_id:
+            # Private message
+            message_data["recipient_id"] = recipient_id
+            # Save to database
+            await db.messages.insert_one(message_data)
+            
+            # Send to private room
+            users = sorted([sender_id, recipient_id])
+            room_name = f"private_{users[0]}_{users[1]}"
+            await sio.emit('new_message', message_data, room=room_name)
+            
+            # Send notification to recipient's personal room
+            await sio.emit('new_message', message_data, room=f"user_{recipient_id}")
+        else:
+            # Channel message
+            await db.messages.insert_one(message_data)
+            # Send to channel room
+            await sio.emit('new_message', message_data, room=f"channel_{channel}")
+            
+        print(f"📩 Message sent: {content[:50]}...")
+        
+    except Exception as e:
+        print(f"❌ Error sending message: {e}")
 
 @sio.event
 async def join_room(sid, data):
     room = data.get('room', 'general')
     await sio.enter_room(sid, room)
     await sio.emit('joined_room', {'room': room}, room=sid)
-
-@sio.event
-async def send_message(sid, data):
-    room = data.get('room', 'general')
-    message = data.get('message')
-    sender = data.get('sender')
-    
-    # Save message to database
-    message_data = {
-        "id": str(uuid.uuid4()),
-        "content": message,
-        "sender_id": sender,
-        "channel": room,
-        "timestamp": datetime.utcnow(),
-        "message_type": "text"
-    }
-    await db.messages.insert_one(message_data)
-    
-    # Broadcast to room
-    await sio.emit('new_message', message_data, room=room)
 
 @sio.event
 async def location_update(sid, data):
