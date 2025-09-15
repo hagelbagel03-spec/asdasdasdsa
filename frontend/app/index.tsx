@@ -6824,40 +6824,44 @@ Beispielinhalt:
                     📩 Nachricht an {selectedRecipient?.username}
                   </Text>
                 </TouchableOpacity>
-              <TextInput
-                style={[dynamicStyles.formInput, dynamicStyles.textArea]}
-                value={privateMessage}
-                onChangeText={setPrivateMessage}
-                placeholder="Schreiben Sie Ihre private Nachricht hier..."
-                placeholderTextColor={colors.textMuted}
-                multiline
-                numberOfLines={4}
-                maxLength={500}
-              />
-              <Text style={dynamicStyles.submitNote}>
-                {privateMessage.length}/500 Zeichen
-              </Text>
-            </View>
+                <TextInput
+                  style={[dynamicStyles.formInput, dynamicStyles.textArea]}
+                  value={privateMessage}
+                  onChangeText={setPrivateMessage}
+                  placeholder="Schreiben Sie Ihre private Nachricht hier..."
+                  placeholderTextColor={colors.textMuted}
+                  multiline
+                  numberOfLines={4}
+                  maxLength={500}
+                />
+                <Text style={dynamicStyles.submitNote}>
+                  {privateMessage.length}/500 Zeichen
+                </Text>
+              </View>
+            )}
 
-            <TouchableOpacity
-              style={[
-                dynamicStyles.submitButton,
-                (!privateMessage.trim() || sendingPrivateMessage) && dynamicStyles.submitButtonDisabled
-              ]}
-              onPress={sendPrivateMessage}
-              disabled={!privateMessage.trim() || sendingPrivateMessage}
-            >
-              {sendingPrivateMessage ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <>
-                  <Ionicons name="send" size={20} color="#FFFFFF" />
-                  <Text style={dynamicStyles.submitButtonText}>
-                    📤 Nachricht senden
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
+            {/* Submit Button nur anzeigen wenn Empfänger gewählt */}
+            {selectedRecipient && (
+              <TouchableOpacity
+                style={[
+                  dynamicStyles.submitButton,
+                  (!privateMessage.trim() || sendingPrivateMessage) && dynamicStyles.submitButtonDisabled
+                ]}
+                onPress={sendPrivateMessage}
+                disabled={!privateMessage.trim() || sendingPrivateMessage}
+              >
+                {sendingPrivateMessage ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons name="send" size={20} color="#FFFFFF" />
+                    <Text style={dynamicStyles.submitButtonText}>
+                      📤 Nachricht senden
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
 
             <Text style={dynamicStyles.submitNote}>
               💡 Der Empfänger erhält eine Benachrichtigung über Ihre Nachricht.
