@@ -362,11 +362,18 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
                   <Text style={styles.userName}>{user.username}</Text>
                   <Text style={styles.userRole}>{user.role}</Text>
                 </View>
-                <View style={[styles.statusDot, { 
-                  backgroundColor: user.status === 'online' ? '#23A55A' : 
-                                  user.status === 'away' ? '#F0B232' :
-                                  user.status === 'busy' ? '#F23F43' : '#80848E'
-                }]} />
+                <View style={styles.userStatus}>
+                  <View style={[styles.statusDot, { 
+                    backgroundColor: user.status === 'online' ? '#23A55A' : 
+                                    user.status === 'away' ? '#F0B232' :
+                                    user.status === 'busy' ? '#F23F43' : '#80848E'
+                  }]} />
+                  <Text style={styles.statusText}>
+                    {user.status === 'online' ? 'Online' : 
+                     user.status === 'away' ? 'Abwesend' :
+                     user.status === 'busy' ? 'Beschäftigt' : 'Offline'}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))
           )}
