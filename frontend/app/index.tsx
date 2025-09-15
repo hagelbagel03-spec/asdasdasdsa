@@ -5510,10 +5510,14 @@ const MainApp = () => {
                   {/* Incident Action Buttons */}
                   <View style={dynamicStyles.incidentActions}>
                     <TouchableOpacity
-                      style={[dynamicStyles.incidentActionBtn, { backgroundColor: colors.textMuted, opacity: 0.3 }]}
-                      disabled={true}
+                      style={[dynamicStyles.incidentActionBtn, { backgroundColor: colors.primary }]}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        setSelectedIncident(incident);
+                        setShowIncidentModal(true);
+                      }}
                     >
-                      <Ionicons name="map" size={16} color="#FFFFFF" />
+                      <Ionicons name="eye" size={16} color="#FFFFFF" />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={[dynamicStyles.incidentActionBtn, { backgroundColor: colors.success }]}
