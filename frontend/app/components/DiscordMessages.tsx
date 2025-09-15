@@ -354,10 +354,19 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
                   setSelectedUser(user);
                   setCurrentView('chat');
                   setMessages([]); // Clear messages
+                  // Clear unread count for this user
+                  setUnreadMessages(prev => ({ ...prev, [user.id]: 0 }));
                 }}
               >
                 <View style={styles.userAvatar}>
                   <Text style={styles.avatarText}>{user.avatar}</Text>
+                  {(unreadMessages[user.id] || 0) > 0 && (
+                    <View style={styles.unreadBadge}>
+                      <Text style={styles.unreadBadgeText}>
+                        {unreadMessages[user.id] > 99 ? '99+' : unreadMessages[user.id]}
+                      </Text>
+                    </View>
+                  )}
                 </View>
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>{user.username}</Text>
