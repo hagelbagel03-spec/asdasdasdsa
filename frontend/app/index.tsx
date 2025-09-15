@@ -6605,6 +6605,23 @@ Beispielinhalt:
                   
                 {/* Auf Karte zeigen Button entfernt */}
 
+                  {/* Annehmen Button - falls Vorfall noch nicht zugewiesen ist */}
+                  {!selectedIncident.assigned_to && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
+                      onPress={() => {
+                        if (window.confirm(`👤 Vorfall annehmen\n\n"${selectedIncident.title}" annehmen und selbst bearbeiten?`)) {
+                          assignIncidentToSelf(selectedIncident.id, selectedIncident.title);
+                        }
+                      }}
+                    >
+                      <Ionicons name="person-add" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        👤 Vorfall annehmen
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
                   <TouchableOpacity
                     style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
                     onPress={() => {
