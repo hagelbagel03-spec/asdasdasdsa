@@ -246,6 +246,17 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
       // Send to real backend
       const response = await axios.post(`${API_URL}/api/messages`, messageData, config);
       
+      // Also emit via socket for real-time delivery
+      if (socket) {
+        socket.emit('send_message', {
+          ...messageData,
+          id: response.data.id || Date.now().toString(),
+          sender_name: user?.username || 'Du',
+          sender_id: user?.id || 'test-user',
+          created_at: new Date().toISOString()
+        });
+      }
+      
       // Add message locally for immediate feedback
       const newMsg = {
         id: response.data.id || Date.now().toString(),
