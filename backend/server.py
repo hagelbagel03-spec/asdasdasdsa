@@ -540,9 +540,10 @@ async def delete_message(message_id: str, current_user: User = Depends(get_curre
     if not message:
         raise HTTPException(status_code=404, detail="Message not found")
     
-    # Check if user owns the message or is admin
-    if message["sender_id"] != current_user.id and current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=403, detail="Not authorized to delete this message")
+    # Allow all users to delete any message (removed admin restriction)
+    # Old restriction: Check if user owns the message or is admin
+    # if message["sender_id"] != current_user.id and current_user.role != UserRole.ADMIN:
+    #     raise HTTPException(status_code=403, detail="Not authorized to delete this message")
     
     # Delete the message
     result = await db.messages.delete_one({"id": message_id})
