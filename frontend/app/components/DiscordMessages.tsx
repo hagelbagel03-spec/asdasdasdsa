@@ -19,6 +19,7 @@ interface DiscordMessagesProps {
   token: string; 
   selectedChannel: string;
   theme?: any;
+  usersByStatus?: any; // Add usersByStatus prop
 }
 
 const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selectedChannel, theme }) => {
