@@ -4686,9 +4686,6 @@ const MainApp = () => {
 
   // Render chat screen function - FIXED: Use DiscordMessages component
   const renderChatScreen = () => {
-    console.log('🔍 renderChatScreen called - using DiscordMessages component');
-    console.log('👥 usersByStatus:', usersByStatus);
-    
     return (
       <DiscordMessages 
         user={user || { username: 'Test Beamter', id: 'test-123' }}
