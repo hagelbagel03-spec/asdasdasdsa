@@ -268,30 +268,41 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
         </View>
         
         <ScrollView style={{ flex: 1 }}>
-          {users.map((user) => (
-            <TouchableOpacity
-              key={user.id}
-              style={styles.userItem}
-              onPress={() => {
-                setSelectedUser(user);
-                setCurrentView('chat');
-                setMessages([]); // Clear messages
-              }}
-            >
-              <View style={styles.userAvatar}>
-                <Text style={styles.avatarText}>{user.avatar}</Text>
-              </View>
-              <View style={styles.userInfo}>
-                <Text style={styles.userName}>{user.username}</Text>
-                <Text style={styles.userRole}>{user.role}</Text>
-              </View>
-              <View style={[styles.statusDot, { 
-                backgroundColor: user.status === 'online' ? '#23A55A' : 
-                                user.status === 'away' ? '#F0B232' :
-                                user.status === 'busy' ? '#F23F43' : '#80848E'
-              }]} />
-            </TouchableOpacity>
-          ))}
+          {users.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                Keine registrierten Benutzer gefunden
+              </Text>
+              <Text style={[styles.emptyText, { fontSize: 14, marginTop: 8 }]}>
+                Benutzer werden geladen...
+              </Text>
+            </View>
+          ) : (
+            users.map((user) => (
+              <TouchableOpacity
+                key={user.id}
+                style={styles.userItem}
+                onPress={() => {
+                  setSelectedUser(user);
+                  setCurrentView('chat');
+                  setMessages([]); // Clear messages
+                }}
+              >
+                <View style={styles.userAvatar}>
+                  <Text style={styles.avatarText}>{user.avatar}</Text>
+                </View>
+                <View style={styles.userInfo}>
+                  <Text style={styles.userName}>{user.username}</Text>
+                  <Text style={styles.userRole}>{user.role}</Text>
+                </View>
+                <View style={[styles.statusDot, { 
+                  backgroundColor: user.status === 'online' ? '#23A55A' : 
+                                  user.status === 'away' ? '#F0B232' :
+                                  user.status === 'busy' ? '#F23F43' : '#80848E'
+                }]} />
+              </TouchableOpacity>
+            ))
+          )}
         </ScrollView>
       </View>
     );
