@@ -98,9 +98,35 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
     setSending(true);
 
     try {
-      // Add message locally for immediate feedback - no backend needed
+      const config = token ? {
+        headers: { Authorization: `Bearer ${token}` }
+      } : {};
+
+      let messageData;
+      
+      if (currentView === 'chat' && selectedUser) {
+        // Private message
+        messageData = {
+          content: messageToSend,
+          recipient_id: selectedUser.id,
+          channel: "private",
+          message_type: "text"
+        };
+      } else {
+        // Channel message
+        messageData = {
+          content: messageToSend,
+          channel: selectedChannelId,
+          message_type: "text"
+        };
+      }
+
+      // Send to real backend
+      const response = await axios.post(`${API_URL}/api/messages`, messageData, config);
+      
+      // Add message locally for immediate feedback
       const newMsg = {
-        id: Date.now().toString(),
+        id: response.data.id || Date.now().toString(),
         content: messageToSend,
         sender_name: user?.username || 'Du',
         sender_id: user?.id || 'test-user',
@@ -110,31 +136,11 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
       
       setMessages(prev => [...prev, newMsg]);
       
-      // Mock response from other users for testing
-      if (Math.random() > 0.7) {
-        setTimeout(() => {
-          const responses = [
-            'Roger that!',
-            'Verstanden, Chef!',
-            'Bin unterwegs',
-            'Alles klar!',
-            '10-4'
-          ];
-          const mockResponse = {
-            id: (Date.now() + 1).toString(),
-            content: responses[Math.floor(Math.random() * responses.length)],
-            sender_name: currentView === 'chat' && selectedUser ? selectedUser.username : 'Kollege',
-            sender_id: currentView === 'chat' && selectedUser ? selectedUser.id : 'other-user',
-            created_at: new Date().toISOString(),
-            isOwn: false
-          };
-          setMessages(prev => [...prev, mockResponse]);
-        }, 2000);
-      }
+      console.log('✅ Message sent successfully');
 
     } catch (error) {
-      console.error('Error sending:', error);
-      setNewMessage(messageToSend);
+      console.error('❌ Error sending message:', error);
+      setNewMessage(messageToSend); // Restore message on error
     } finally {
       setSending(false);
     }
