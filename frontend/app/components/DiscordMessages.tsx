@@ -53,27 +53,41 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
     { id: 'dienst', name: 'dienst', icon: 'shield-checkmark', color: '#FEE75C' },
   ];
 
-  // Get real users from usersByStatus prop
+  // Get real users from usersByStatus prop - with safety checks
   const users = React.useMemo(() => {
-    if (!usersByStatus) return [];
+    if (!usersByStatus || typeof usersByStatus !== 'object') {
+      console.log('⚠️ usersByStatus is not available or not an object');
+      return [];
+    }
     
-    const allUsers = [];
-    Object.entries(usersByStatus).forEach(([status, statusUsers]) => {
-      (statusUsers as any[]).forEach((statusUser) => {
-        allUsers.push({
-          id: statusUser.id,
-          username: statusUser.username,
-          role: statusUser.rank || statusUser.role || 'Beamter',
-          status: statusUser.is_online ? 'online' : 'offline',
-          avatar: statusUser.username.charAt(0).toUpperCase() + (statusUser.username.split(' ')[1]?.[0] || '').toUpperCase(),
-          department: statusUser.department,
-          service_number: statusUser.service_number
-        });
+    try {
+      const allUsers = [];
+      Object.entries(usersByStatus).forEach(([status, statusUsers]) => {
+        if (Array.isArray(statusUsers)) {
+          statusUsers.forEach((statusUser) => {
+            if (statusUser && statusUser.id && statusUser.username) {
+              allUsers.push({
+                id: statusUser.id,
+                username: statusUser.username,
+                role: statusUser.rank || statusUser.role || 'Beamter',
+                status: statusUser.is_online ? 'online' : 'offline',
+                avatar: statusUser.username.charAt(0).toUpperCase() + (statusUser.username.split(' ')[1]?.[0] || '').toUpperCase(),
+                department: statusUser.department || '',
+                service_number: statusUser.service_number || ''
+              });
+            }
+          });
+        }
       });
-    });
-    
-    // Remove current user from list
-    return allUsers.filter(u => u.id !== user?.id);
+      
+      // Remove current user from list
+      const filteredUsers = allUsers.filter(u => u.id !== user?.id);
+      console.log('👥 Processed users for chat:', filteredUsers.length);
+      return filteredUsers;
+    } catch (error) {
+      console.error('❌ Error processing users:', error);
+      return [];
+    }
   }, [usersByStatus, user]);
 
   const sendMessage = async () => {
