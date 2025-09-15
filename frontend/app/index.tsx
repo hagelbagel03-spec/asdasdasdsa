@@ -5267,7 +5267,16 @@ const MainApp = () => {
                   </View>
                   <View style={dynamicStyles.reportActions}>
                     <TouchableOpacity 
-                      style={dynamicStyles.editButton}
+                      style={[dynamicStyles.editButton, { backgroundColor: colors.primary, marginRight: 4 }]}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        viewReportDetails(report);
+                      }}
+                    >
+                      <Ionicons name="eye" size={18} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={[dynamicStyles.editButton, { marginRight: 4 }]}
                       onPress={(e) => {
                         e.stopPropagation();
                         editReport(report);
