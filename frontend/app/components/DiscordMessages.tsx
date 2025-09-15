@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
 
 interface DiscordMessagesProps {
   user: any;
