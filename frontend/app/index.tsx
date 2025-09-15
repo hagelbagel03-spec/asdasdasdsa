@@ -7342,7 +7342,7 @@ Beispielinhalt:
                 <View style={dynamicStyles.detailCard}>
                   <Text style={dynamicStyles.detailSectionTitle}>🎯 Status-Aktionen</Text>
                   
-                  {selectedReport.status !== 'in_progress' && (
+                  {user?.role === 'admin' && selectedReport.status !== 'in_progress' && (
                     <TouchableOpacity
                       style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
                       onPress={() => {
@@ -7358,7 +7358,7 @@ Beispielinhalt:
                     </TouchableOpacity>
                   )}
 
-                  {selectedReport.status !== 'completed' && (
+                  {user?.role === 'admin' && selectedReport.status !== 'completed' && (
                     <TouchableOpacity
                       style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
                       onPress={() => {
@@ -7374,7 +7374,7 @@ Beispielinhalt:
                     </TouchableOpacity>
                   )}
 
-                  {selectedReport.status !== 'archived' && (
+                  {user?.role === 'admin' && selectedReport.status !== 'archived' && (
                     <TouchableOpacity
                       style={[dynamicStyles.actionButton, { backgroundColor: colors.textMuted, marginBottom: 12 }]}
                       onPress={() => {
@@ -7405,6 +7405,18 @@ Beispielinhalt:
                         🗑️ Bericht löschen
                       </Text>
                     </TouchableOpacity>
+                  )}
+
+                  {user?.role !== 'admin' && (
+                    <View style={dynamicStyles.emptyState}>
+                      <Ionicons name="shield-checkmark" size={48} color={colors.textMuted} />
+                      <Text style={[dynamicStyles.emptyText, { color: colors.textMuted }]}>
+                        Nur Administratoren können den Status ändern
+                      </Text>
+                      <Text style={[dynamicStyles.emptySubtext, { color: colors.textMuted }]}>
+                        Kontaktieren Sie einen Admin für Status-Updates
+                      </Text>
+                    </View>
                   )}
                 </View>
 
