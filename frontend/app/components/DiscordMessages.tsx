@@ -44,6 +44,8 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
   const [sending, setSending] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const API_URL = "http://localhost:8001";
+
   // Load messages when component mounts or view changes
   React.useEffect(() => {
     loadMessages();
