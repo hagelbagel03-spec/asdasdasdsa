@@ -5704,15 +5704,15 @@ const MainApp = () => {
         </TouchableOpacity>
         
         <TouchableOpacity 
-          style={[dynamicStyles.tabItem, activeTab === 'messages' && dynamicStyles.tabItemActive]}
-          onPress={() => setActiveTab('messages')}
+          style={[dynamicStyles.tabItem, { opacity: 0.3 }]}
+          disabled={true}
         >
           <Ionicons 
-            name={activeTab === 'messages' ? 'chatbubbles' : 'chatbubbles-outline'} 
+            name="chatbubbles-outline"
             size={24} 
-            color={activeTab === 'messages' ? '#FFFFFF' : colors.textMuted} 
+            color={colors.textMuted}
           />
-          <Text style={[dynamicStyles.tabLabel, activeTab === 'messages' && dynamicStyles.tabLabelActive]}>
+          <Text style={[dynamicStyles.tabLabel, { color: colors.textMuted }]}>
             Nachrichten
           </Text>
         </TouchableOpacity>
