@@ -6769,12 +6769,6 @@ Beispielinhalt:
                           <Text style={dynamicStyles.mapPreviewCoords}>  
                             🧭 {selectedIncident.location.lat.toFixed(4)}, {selectedIncident.location.lng.toFixed(4)}
                           </Text>
-                          <View style={dynamicStyles.mapOpenButton}>
-                            <Ionicons name="open-outline" size={16} color="#FFFFFF" />
-                            <Text style={dynamicStyles.mapOpenButtonText}>
-                              In Google Maps öffnen
-                            </Text>
-                          </View>
                         </View>
                       </TouchableOpacity>
                     </View>
