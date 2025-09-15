@@ -604,6 +604,15 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+    marginRight: 8,
+  },
+  userStatus: {
+    alignItems: 'flex-end',
+  },
+  statusText: {
+    fontSize: 12,
+    color: '#B9BBBE',
+    marginTop: 4,
   },
   messagesArea: {
     flex: 1,
