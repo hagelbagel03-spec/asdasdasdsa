@@ -253,12 +253,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         user_identifier: str = payload.get("sub")  # Could be email or user_id
         user_id: str = payload.get("user_id")  # Token also contains user_id
         
-        print(f"🔍 JWT Payload: {payload}")
-        print(f"🔍 User identifier from token: {user_identifier}")
-        print(f"🔍 User ID from token: {user_id}")
-        
         if user_identifier is None:
-            print("❌ No identifier in token")
             raise credentials_exception
     except JWTError as e:
         print(f"❌ JWT Error: {e}")
