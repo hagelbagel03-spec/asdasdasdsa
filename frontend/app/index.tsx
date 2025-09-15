@@ -948,6 +948,12 @@ const MainApp = () => {
     setShowReportModal(true);
   };
 
+  // View report details with status actions
+  const viewReportDetails = (report) => {
+    setSelectedReport(report);
+    setShowReportDetailModal(true);
+  };
+
   useEffect(() => {
     if (activeTab === 'team') {
       loadUsersByStatus();
