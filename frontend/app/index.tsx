@@ -4661,6 +4661,9 @@ const MainApp = () => {
       fontSize: 14,
       fontWeight: '600',
     },
+    mapContainer: {
+      marginTop: 12,
+    },
   });
 
   const renderHomeScreen = () => (
