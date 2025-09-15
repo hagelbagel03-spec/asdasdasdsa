@@ -4888,13 +4888,10 @@ const MainApp = () => {
 
                 {/* Action Buttons für alle Benutzer */}
                 <View style={dynamicStyles.reportActions}>
-                  {/* Private Nachricht Button - für ALLE Benutzer */}
+                  {/* Private Nachricht Button - DEAKTIVIERT */}
                   <TouchableOpacity 
-                    style={[dynamicStyles.editButton, { backgroundColor: colors.secondary }]}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      openPrivateMessage(officer);
-                    }}
+                    style={[dynamicStyles.editButton, { backgroundColor: colors.textMuted, opacity: 0.3 }]}
+                    disabled={true}
                   >
                     <Ionicons name="chatbubble" size={16} color="#FFFFFF" />
                   </TouchableOpacity>
