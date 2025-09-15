@@ -4686,15 +4686,43 @@ const MainApp = () => {
 
   // Render chat screen function - FIXED: Use DiscordMessages component
   const renderChatScreen = () => {
-    return (
-      <DiscordMessages 
-        user={user || { username: 'Test Beamter', id: 'test-123' }}
-        token={token || 'demo-token'}
-        selectedChannel="allgemein"
-        theme={{ colors, isDarkMode }}
-        usersByStatus={usersByStatus}
-      />
-    );
+    // Debug usersByStatus
+    console.log('🔍 renderChatScreen called');
+    console.log('👥 usersByStatus available:', !!usersByStatus);
+    console.log('👥 usersByStatus keys:', Object.keys(usersByStatus || {}));
+    
+    // Fallback if DiscordMessages fails
+    try {
+      return (
+        <DiscordMessages 
+          user={user || { username: 'Test Beamter', id: 'test-123' }}
+          token={token || 'demo-token'}
+          selectedChannel="allgemein"
+          theme={{ colors, isDarkMode }}
+          usersByStatus={usersByStatus}
+        />
+      );
+    } catch (error) {
+      console.error('❌ DiscordMessages error:', error);
+      
+      // Simple fallback UI
+      return (
+        <View style={dynamicStyles.container}>
+          <View style={dynamicStyles.homeHeader}>
+            <Text style={dynamicStyles.userName}>💬 Nachrichten</Text>
+          </View>
+          <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center' }}>
+            <Ionicons name="chatbubbles" size={64} color={colors.textMuted} />
+            <Text style={{ color: colors.text, fontSize: 16, marginTop: 16 }}>
+              Nachrichten werden geladen...
+            </Text>
+            <Text style={{ color: colors.textMuted, fontSize: 14, marginTop: 8 }}>
+              Komponente wird initialisiert
+            </Text>
+          </View>
+        </View>
+      );
+    }
   };
   const renderIncidentScreen = () => {
     console.log('🔍 Rendering incident screen...');
