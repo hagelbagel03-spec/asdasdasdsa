@@ -52,14 +52,28 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
     { id: 'dienst', name: 'dienst', icon: 'shield-checkmark', color: '#FEE75C' },
   ];
 
-  // Fixed users - always visible
-  const users = [
-    { id: 'user-1', username: 'Max Mustermann', role: 'Beamter', status: 'online', avatar: 'MM' },
-    { id: 'user-2', username: 'Anna Schmidt', role: 'Oberbeamtin', status: 'online', avatar: 'AS' },
-    { id: 'user-3', username: 'Thomas Weber', role: 'Streifenbeamter', status: 'away', avatar: 'TW' },
-    { id: 'user-4', username: 'Lisa Müller', role: 'Ermittlerin', status: 'online', avatar: 'LM' },
-    { id: 'user-5', username: 'Michael Klein', role: 'Einsatzleiter', status: 'busy', avatar: 'MK' },
-  ];
+  // Get real users from usersByStatus prop
+  const users = React.useMemo(() => {
+    if (!usersByStatus) return [];
+    
+    const allUsers = [];
+    Object.entries(usersByStatus).forEach(([status, statusUsers]) => {
+      (statusUsers as any[]).forEach((statusUser) => {
+        allUsers.push({
+          id: statusUser.id,
+          username: statusUser.username,
+          role: statusUser.rank || statusUser.role || 'Beamter',
+          status: statusUser.is_online ? 'online' : 'offline',
+          avatar: statusUser.username.charAt(0).toUpperCase() + (statusUser.username.split(' ')[1]?.[0] || '').toUpperCase(),
+          department: statusUser.department,
+          service_number: statusUser.service_number
+        });
+      });
+    });
+    
+    // Remove current user from list
+    return allUsers.filter(u => u.id !== user?.id);
+  }, [usersByStatus, user]);
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
