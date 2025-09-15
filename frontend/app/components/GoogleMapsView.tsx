@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
 
-const GoogleMapsView = ({ incident, showAllIncidents = false }) => {
+const GoogleMapsView = ({ incident }) => {
   // Fixed colors instead of theme context
   const colors = {
     text: '#1a1a1a',
@@ -16,36 +15,6 @@ const GoogleMapsView = ({ incident, showAllIncidents = false }) => {
     warning: '#FFC107',
     success: '#28A745'
   };
-
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [allIncidents, setAllIncidents] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Load all incidents for live map view
-  const loadAllIncidents = async () => {
-    if (!showAllIncidents) return;
-    
-    setLoading(true);
-    try {
-      const response = await axios.get('http://212.227.57.238:8001/api/incidents');
-      const incidentsWithLocation = response.data.filter(inc => 
-        inc.location?.lat && inc.location?.lng
-      );
-      setAllIncidents(incidentsWithLocation);
-      console.log('🗺️ Loaded incidents for map:', incidentsWithLocation.length);
-    } catch (error) {
-      console.error('❌ Error loading incidents for map:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAllIncidents();
-    // Reload incidents every 30 seconds for live updates
-    const interval = setInterval(loadAllIncidents, 30000);
-    return () => clearInterval(interval);
-  }, [showAllIncidents]);
 
   // Get coordinates from incident
   const getCoordinates = () => {
@@ -76,101 +45,66 @@ const GoogleMapsView = ({ incident, showAllIncidents = false }) => {
     }
   };
 
-  // Get status icon
-  const getStatusIcon = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'open': return 'alert-circle';
-      case 'in_progress': return 'time';
-      case 'closed': return 'checkmark-circle';
-      default: return 'information-circle';
-    }
-  };
-
-  if (showAllIncidents) {
-    // Live incidents map view
+  if (!coordinates) {
     return (
       <View style={styles.container}>
-        <View style={styles.mapHeader}>
-          <Ionicons name="location" size={20} color={colors.primary} />
-          <Text style={styles.headerText}>Live Vorfälle-Karte</Text>
-          <TouchableOpacity onPress={loadAllIncidents} disabled={loading}>
-            <Ionicons 
-              name={loading ? "hourglass" : "refresh"} 
-              size={20} 
-              color={colors.primary} 
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.liveMapContainer}>
-          <View style={styles.mapPlaceholder}>
-            <Ionicons name="map" size={48} color={colors.primary} />
-            <Text style={styles.mapTitle}>📍 Live Vorfälle-Standorte</Text>
-            <Text style={styles.mapSubtitle}>
-              {allIncidents.length} aktive Vorfälle
-            </Text>
-          </View>
-
-          {/* Incident Markers List */}
-          <View style={styles.incidentsList}>
-            {loading ? (
-              <Text style={styles.loadingText}>Lade Vorfälle...</Text>
-            ) : allIncidents.length === 0 ? (
-              <Text style={styles.noIncidentsText}>
-                Keine Vorfälle mit GPS-Koordinaten
-              </Text>
-            ) : (
-              allIncidents.map((inc, index) => (
-                <TouchableOpacity
-                  key={inc.id || index}
-                  style={[styles.incidentMarker, {
-                    borderLeftColor: getPriorityColor(inc.priority)
-                  }]}
-                  onPress={() => {
-                    Alert.alert(
-                      `🚨 ${inc.title}`,
-                      `📍 ${inc.address}\n🏷️ ${inc.priority?.toUpperCase() || 'NORMAL'}\n📊 ${inc.status?.toUpperCase() || 'OFFEN'}\n🧭 ${inc.location.lat.toFixed(4)}, ${inc.location.lng.toFixed(4)}`,
-                      [
-                        { text: 'OK', style: 'default' }
-                      ]
-                    );
-                  }}
-                >
-                  <View style={styles.markerInfo}>
-                    <View style={styles.markerHeader}>
-                      <Ionicons 
-                        name={getStatusIcon(inc.status)} 
-                        size={16} 
-                        color={getPriorityColor(inc.priority)} 
-                      />
-                      <Text style={[styles.markerTitle, {
-                        color: getPriorityColor(inc.priority)
-                      }]} numberOfLines={1}>
-                        {inc.title}
-                      </Text>
-                    </View>
-                    <Text style={styles.markerAddress} numberOfLines={1}>
-                      📍 {inc.address}
-                    </Text>
-                    <Text style={styles.markerCoords}>
-                      🧭 {inc.location.lat.toFixed(4)}, {inc.location.lng.toFixed(4)}
-                    </Text>
-                  </View>
-                  <View style={[styles.priorityBadge, {
-                    backgroundColor: getPriorityColor(inc.priority)
-                  }]}>
-                    <Text style={styles.priorityText}>
-                      {inc.priority?.charAt(0).toUpperCase() || 'N'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))
-            )}
-          </View>
+        <View style={styles.noLocationContainer}>
+          <Ionicons name="location-outline" size={32} color={colors.textMuted} />
+          <Text style={styles.noLocationText}>
+            Keine GPS-Koordinaten verfügbar
+          </Text>
         </View>
       </View>
     );
   }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.mapContainer}>
+        <View style={styles.mapPlaceholder}>
+          <Ionicons name="location" size={48} color={getPriorityColor(incident.priority)} />
+          <Text style={styles.incidentTitle}>📍 {incident.title}</Text>
+          <Text style={styles.incidentAddress}>{incident.address}</Text>
+          <Text style={styles.coordinates}>
+            🧭 {coordinates.lat.toFixed(6)}, {coordinates.lng.toFixed(6)}
+          </Text>
+          
+          <View style={[styles.priorityBadge, {
+            backgroundColor: getPriorityColor(incident.priority)
+          }]}>
+            <Text style={styles.priorityText}>
+              {incident.priority?.toUpperCase() || 'NORMAL'} PRIORITÄT
+            </Text>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.openMapButton}
+            onPress={() => {
+              const url = `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}&z=16`;
+              Alert.alert(
+                '🗺️ In Google Maps öffnen',
+                `Möchten Sie den Vorfall-Standort in Google Maps öffnen?\n\n📍 ${incident.address}\n🧭 ${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)}`,
+                [
+                  { text: 'Abbrechen', style: 'cancel' },
+                  { 
+                    text: 'Maps öffnen', 
+                    onPress: () => {
+                      if (typeof window !== 'undefined') {
+                        window.open(url, '_blank');
+                      }
+                    }
+                  }
+                ]
+              );
+            }}
+          >
+            <Ionicons name="open-outline" size={16} color="#FFFFFF" />
+            <Text style={styles.openMapButtonText}>Google Maps öffnen</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
     }
     // Fallback: Schwelm coordinates
     return {
