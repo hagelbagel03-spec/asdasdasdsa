@@ -836,9 +836,10 @@ async def get_person(person_id: str, current_user: User = Depends(get_current_us
 @api_router.put("/persons/{person_id}", response_model=Person)
 async def update_person(person_id: str, updates: PersonUpdate, current_user: User = Depends(get_current_user)):
     """Aktualisiere Person-Daten"""
-    # Only police and admin can update person entries
-    if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # Allow all authenticated users to update person entries (removed admin restriction)
+    # Old restriction: Only police and admin can update person entries
+    # if current_user.role not in [UserRole.POLICE, UserRole.ADMIN]:
+    #     raise HTTPException(status_code=403, detail="Not authorized")
     
     update_data = {k: v for k, v in updates.dict().items() if v is not None}
     update_data['updated_at'] = datetime.utcnow()
