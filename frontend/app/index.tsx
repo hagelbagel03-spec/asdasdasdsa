@@ -7376,18 +7376,79 @@ Beispielinhalt:
                 </View>
 
                 <View style={dynamicStyles.detailCard}>
-                  <Text style={dynamicStyles.detailSectionTitle}>🎯 Aktionen</Text>
+                  <Text style={dynamicStyles.detailSectionTitle}>🎯 Status-Aktionen</Text>
                   
-                  {/* Alle Status-Update-Buttons entfernt - nur Anzeige */}
-                  <View style={dynamicStyles.emptyState}>
-                    <Ionicons name="information-circle" size={48} color={colors.textMuted} />
-                    <Text style={[dynamicStyles.emptyText, { color: colors.textMuted }]}>
-                      Bericht-Details
-                    </Text>
-                    <Text style={[dynamicStyles.emptySubtext, { color: colors.textMuted }]}>
-                      Verwenden Sie "Bearbeiten" zum Ändern des Berichts
-                    </Text>
-                  </View>
+                  {selectedReport.status !== 'in_progress' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.primary, marginBottom: 12 }]}
+                      onPress={() => {
+                        Alert.alert(
+                          '⚙️ Status ändern',
+                          `"${selectedReport.title}" auf "IN BEARBEITUNG" setzen?`,
+                          [
+                            { text: 'Abbrechen', style: 'cancel' },
+                            { 
+                              text: 'Ändern', 
+                              onPress: () => updateReportStatus(selectedReport.id, 'in_progress', selectedReport.title)
+                            }
+                          ]
+                        );
+                      }}
+                    >
+                      <Ionicons name="cog" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        ⚙️ IN BEARBEITUNG
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {selectedReport.status !== 'completed' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.success, marginBottom: 12 }]}
+                      onPress={() => {
+                        Alert.alert(
+                          '✅ Status ändern',
+                          `"${selectedReport.title}" auf "ABGESCHLOSSEN" setzen?`,
+                          [
+                            { text: 'Abbrechen', style: 'cancel' },
+                            { 
+                              text: 'Ändern', 
+                              onPress: () => updateReportStatus(selectedReport.id, 'completed', selectedReport.title)
+                            }
+                          ]
+                        );
+                      }}
+                    >
+                      <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        ✅ ABGESCHLOSSEN
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {selectedReport.status !== 'archived' && (
+                    <TouchableOpacity
+                      style={[dynamicStyles.actionButton, { backgroundColor: colors.textMuted, marginBottom: 12 }]}
+                      onPress={() => {
+                        Alert.alert(
+                          '📦 Status ändern',
+                          `"${selectedReport.title}" auf "ARCHIVIERT" setzen?`,
+                          [
+                            { text: 'Abbrechen', style: 'cancel' },
+                            { 
+                              text: 'Ändern', 
+                              onPress: () => updateReportStatus(selectedReport.id, 'archived', selectedReport.title)
+                            }
+                          ]
+                        );
+                      }}
+                    >
+                      <Ionicons name="archive" size={20} color="#FFFFFF" />
+                      <Text style={[dynamicStyles.actionButtonText, { color: '#FFFFFF' }]}>
+                        📦 ARCHIVIERT
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
 
                 <View style={{ height: 40 }} />
