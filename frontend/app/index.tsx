@@ -1406,6 +1406,52 @@ const MainApp = () => {
     }
   };
 
+  const assignIncidentToSelf = async (incidentId, incidentTitle) => {
+    try {
+      const config = token ? {
+        headers: { Authorization: `Bearer ${token}` }
+      } : {};
+      
+      console.log('👤 Nehme Vorfall an:', incidentId, incidentTitle);
+      
+      const updateData = {
+        assigned_to: user?.id,
+        status: 'in_progress'
+      };
+      
+      await axios.put(`${API_URL}/api/incidents/${incidentId}`, updateData, config);
+      
+      window.alert(`✅ Erfolg\n\nVorfall "${incidentTitle}" wurde Ihnen zugewiesen und ist nun in Bearbeitung!`);
+      
+      // Reload data to reflect changes
+      await loadAllIncidents();
+      await loadData();
+      
+      // Update the selected incident in the modal
+      if (selectedIncident && selectedIncident.id === incidentId) {
+        setSelectedIncident(prev => ({
+          ...prev,
+          assigned_to: user?.id,
+          status: 'in_progress'
+        }));
+      }
+      
+    } catch (error) {
+      console.error('❌ Incident assign error:', error);
+      
+      let errorMsg = 'Vorfall konnte nicht angenommen werden.';
+      if (error.response?.status === 404) {
+        errorMsg = 'Vorfall nicht gefunden.';
+      } else if (error.response?.data?.detail) {
+        errorMsg = error.response.data.detail;
+      } else if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+      
+      window.alert(`❌ Fehler\n\n${errorMsg}`);
+    }
+  };
+
   const showIncidentOnMap = (incident) => {
     setSelectedIncident(incident);
     setShowIncidentMap(true);
