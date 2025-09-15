@@ -45,8 +45,82 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
   const [sending, setSending] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const [unreadMessages, setUnreadMessages] = useState<{[key: string]: number}>({});
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const API_URL = "http://localhost:8001";
+
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    if (!token) return;
+
+    const socketInstance = io(API_URL, {
+      auth: {
+        token: token
+      },
+      transports: ['websocket', 'polling']
+    });
+
+    socketInstance.on('connect', () => {
+      console.log('🔗 Socket connected:', socketInstance.id);
+      if (user?.id) {
+        socketInstance.emit('join_user_room', user.id);
+      }
+    });
+
+    socketInstance.on('disconnect', () => {
+      console.log('🔌 Socket disconnected');
+    });
+
+    // Listen for new messages
+    socketInstance.on('new_message', (messageData) => {
+      console.log('📩 New message received:', messageData);
+      
+      // If we're in the same channel/chat, add message immediately
+      if (currentView === 'chat' && selectedUser?.id === messageData.sender_id) {
+        setMessages(prev => [...prev, { ...messageData, isOwn: false }]);
+      } else if (currentView === 'channels' && selectedChannelId === messageData.channel) {
+        setMessages(prev => [...prev, { ...messageData, isOwn: false }]);
+      } else {
+        // Update unread count
+        const senderId = messageData.sender_id;
+        setUnreadMessages(prev => ({
+          ...prev,
+          [senderId]: (prev[senderId] || 0) + 1
+        }));
+      }
+    });
+
+    // Listen for user status updates
+    socketInstance.on('user_status_update', (userData) => {
+      console.log('👤 User status updated:', userData);
+      // Could update user status in real-time here
+    });
+
+    setSocket(socketInstance);
+
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, [token, user?.id]);
+
+  // Join channel room when switching channels
+  useEffect(() => {
+    if (socket && currentView === 'channels') {
+      socket.emit('join_channel', selectedChannelId);
+      console.log('🏠 Joined channel:', selectedChannelId);
+    }
+  }, [socket, currentView, selectedChannelId]);
+
+  // Join private room when starting private chat
+  useEffect(() => {
+    if (socket && currentView === 'chat' && selectedUser) {
+      socket.emit('join_private_room', {
+        user1: user?.id,
+        user2: selectedUser.id
+      });
+      console.log('💬 Joined private room with:', selectedUser.username);
+    }
+  }, [socket, currentView, selectedUser, user?.id]);
 
   // Load messages when component mounts or view changes
   React.useEffect(() => {
