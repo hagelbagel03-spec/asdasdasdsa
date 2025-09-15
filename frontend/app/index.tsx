@@ -4625,16 +4625,7 @@ const MainApp = () => {
                     📍 {incident.address || incident.location || 'Unbekannter Ort'}
                   </Text>
                 </View>
-                <TouchableOpacity 
-                  style={[dynamicStyles.mapButton, { backgroundColor: getPriorityColor(incident.priority) }]}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    setSelectedIncident(incident);
-                    setShowIncidentMap(true);
-                  }}
-                >
-                  <Ionicons name="map" size={18} color="#FFFFFF" />
-                </TouchableOpacity>
+                {/* Karten-Button komplett entfernt */}
               </TouchableOpacity>
             ))}
 
