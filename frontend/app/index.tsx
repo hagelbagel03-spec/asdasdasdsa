@@ -754,6 +754,7 @@ const MainApp = () => {
   
   // Incident Form States
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [location, setLocation] = useState(''); // Missing location state
   
   // Notifications States
   const [notifications, setNotifications] = useState([]);
