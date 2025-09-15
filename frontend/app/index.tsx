@@ -1532,6 +1532,18 @@ const MainApp = () => {
   };
 
   // Submit Incident Function
+  // Submit incident form
+  const submitIncidentForm = async () => {
+    setSendingMessage(true);
+    try {
+      await submitIncident();
+    } catch (error) {
+      console.error('❌ Submit error:', error);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
   const submitIncident = async () => {
     // Validation
     if (!incidentFormData.title.trim()) {
