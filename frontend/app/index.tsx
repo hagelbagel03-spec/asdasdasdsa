@@ -7106,34 +7106,7 @@ Beispielinhalt:
                     </Text>
                   </View>
                   <View style={dynamicStyles.incidentActions}>
-                    <TouchableOpacity 
-                      style={[dynamicStyles.mapButton, { backgroundColor: getPriorityColor(incident.priority) }]}
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        setSelectedIncident(incident);
-                        // Schließe Übersicht und öffne Vorfall-Details (mit Karte drin)
-                        setShowAllIncidentsModal(false);
-                        setTimeout(() => {
-                          setShowIncidentDetailModal(true);
-                        }, 100);
-                      }}
-                    >
-                      <Ionicons name="map" size={18} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={[dynamicStyles.mapButton, { backgroundColor: colors.secondary }]}
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        setSelectedIncident(incident);
-                        // Schließe Übersicht und öffne Vorfall-Details
-                        setShowAllIncidentsModal(false);
-                        setTimeout(() => {
-                          setShowIncidentDetailModal(true);
-                        }, 100);
-                      }}
-                    >
-                      <Ionicons name="eye" size={18} color="#FFFFFF" />
-                    </TouchableOpacity>
+                    {/* Alle Action-Buttons entfernt */}
                     <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
                   </View>
                 </TouchableOpacity>
