@@ -1151,6 +1151,9 @@ const MainApp = () => {
       } : {};
       
       console.log('🗑️ Lösche Benutzer:', userId, username);
+      console.log('🔑 Using token:', token ? 'Yes' : 'No');
+      console.log('🌐 API URL:', `${API_URL}/api/users/${userId}`);
+      
       const response = await axios.delete(`${API_URL}/api/users/${userId}`, config);
       console.log('✅ Benutzer gelöscht:', response.status);
       
@@ -1160,12 +1163,23 @@ const MainApp = () => {
     } catch (error) {
       console.error('❌ User delete error:', error);
       console.error('❌ Error details:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
       
-      const errorMsg = error.response?.data?.detail || 
-                      error.response?.data?.message || 
-                      'Benutzer konnte nicht gelöscht werden';
+      let errorMsg = 'Benutzer konnte nicht gelöscht werden';
       
-      Alert.alert('❌ Fehler', errorMsg);
+      if (error.response?.status === 403) {
+        errorMsg = 'Keine Berechtigung. Nur Administratoren können Benutzer löschen.';
+      } else if (error.response?.status === 404) {
+        errorMsg = 'Benutzer nicht gefunden.';
+      } else if (error.response?.status === 400) {
+        errorMsg = error.response?.data?.detail || 'Fehlerhafte Anfrage.';
+      } else if (error.response?.data?.detail) {
+        errorMsg = error.response.data.detail;
+      } else if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+      
+      Alert.alert('❌ Löschen fehlgeschlagen', errorMsg);
     }
   };
 
