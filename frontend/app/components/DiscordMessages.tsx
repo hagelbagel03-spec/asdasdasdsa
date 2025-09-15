@@ -120,6 +120,8 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
       });
       console.log('💬 Joined private room with:', selectedUser.username);
     }
+  }, [socket, currentView, selectedUser, user?.id]);
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollViewRef.current && messages.length > 0) {
