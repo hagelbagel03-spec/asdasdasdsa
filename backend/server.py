@@ -263,30 +263,19 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     
     # First, try to find by ID (if the identifier looks like a UUID)
     if user_identifier and '-' in user_identifier and len(user_identifier) == 36:
-        print(f"🔍 Identifier looks like UUID, searching by id: {user_identifier}")
         user = await db.users.find_one({"id": user_identifier})
-        if user:
-            print(f"✅ User found by ID: {user.get('username')}")
     
     # If not found by ID, try by email
     if user is None:
-        print(f"🔍 Searching by email: {user_identifier}")
         user = await db.users.find_one({"email": user_identifier})
-        if user:
-            print(f"✅ User found by email: {user.get('username')}")
     
     # If still not found and we have a separate user_id, try that
     if user is None and user_id:
-        print(f"🔍 Searching by separate user_id: {user_id}")
         user = await db.users.find_one({"id": user_id})
-        if user:
-            print(f"✅ User found by separate user_id: {user.get('username')}")
     
     if user is None:
-        print(f"❌ User not found with identifier: {user_identifier}")
         raise credentials_exception
     
-    print(f"✅ User authenticated: {user.get('username')} ({user.get('role')})")
     return User(**user)
 
 # Socket.IO events
