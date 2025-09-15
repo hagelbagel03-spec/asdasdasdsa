@@ -73,31 +73,6 @@ const GoogleMapsView = ({ incident }: { incident: any }) => {
               {incident.priority?.toUpperCase() || 'NORMAL'} PRIORITÄT
             </Text>
           </View>
-
-          <TouchableOpacity 
-            style={styles.openMapButton}
-            onPress={() => {
-              const url = `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}&z=16`;
-              Alert.alert(
-                '🗺️ In Google Maps öffnen',
-                `Möchten Sie den Vorfall-Standort in Google Maps öffnen?\n\n📍 ${incident.address}\n🧭 ${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)}`,
-                [
-                  { text: 'Abbrechen', style: 'cancel' },
-                  { 
-                    text: 'Maps öffnen', 
-                    onPress: () => {
-                      if (typeof window !== 'undefined') {
-                        window.open(url, '_blank');
-                      }
-                    }
-                  }
-                ]
-              );
-            }}
-          >
-            <Ionicons name="open-outline" size={16} color="#FFFFFF" />
-            <Text style={styles.openMapButtonText}>Google Maps öffnen</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </View>
