@@ -6653,16 +6653,72 @@ Beispielinhalt:
                   <View style={dynamicStyles.detailRow}>
                     <Text style={dynamicStyles.detailLabel}>🕒 Gemeldet:</Text>
                     <Text style={dynamicStyles.detailValue}>
-                      {new Date(selectedIncident.created_at).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+                      {selectedIncident.created_at ? new Date(selectedIncident.created_at).toLocaleString('de-DE') : 'Unbekannt'}
                     </Text>
                   </View>
+
+                  {/* GPS-Koordinaten anzeigen */}
+                  {(selectedIncident.location?.lat && selectedIncident.location?.lng) && (
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>📍 GPS-Koordinaten:</Text>
+                      <Text style={dynamicStyles.detailValue}>
+                        {selectedIncident.location.lat.toFixed(6)}, {selectedIncident.location.lng.toFixed(6)}
+                      </Text>
+                    </View>
+                  )}
                 </View>
+
+                {/* Standort-Karte */}
+                {(selectedIncident.location?.lat && selectedIncident.location?.lng) && (
+                  <View style={dynamicStyles.detailCard}>
+                    <Text style={dynamicStyles.detailSectionTitle}>🗺️ Standort-Karte</Text>
+                    
+                    <View style={dynamicStyles.mapContainer}>
+                      <TouchableOpacity 
+                        style={dynamicStyles.mapThumbnail}
+                        onPress={() => {
+                          const lat = selectedIncident.location.lat;
+                          const lng = selectedIncident.location.lng; 
+                          const url = `https://www.google.com/maps?q=${lat},${lng}&z=16`;
+                          Alert.alert(
+                            '🗺️ Standort öffnen',
+                            `Möchten Sie den Vorfall-Standort in Google Maps öffnen?\n\n📍 ${selectedIncident.address}\n🧭 ${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+                            [
+                              { text: 'Abbrechen', style: 'cancel' },
+                              { 
+                                text: 'Maps öffnen', 
+                                onPress: () => {
+                                  if (typeof window !== 'undefined') {
+                                    window.open(url, '_blank');
+                                  }
+                                }
+                              }
+                            ]
+                          );
+                        }}
+                      >
+                        <View style={dynamicStyles.mapPreview}>
+                          <Ionicons name="map" size={48} color={colors.primary} />
+                          <Text style={dynamicStyles.mapPreviewTitle}>
+                            📍 Vorfall-Standort
+                          </Text>
+                          <Text style={dynamicStyles.mapPreviewAddress}>
+                            {selectedIncident.address}
+                          </Text>
+                          <Text style={dynamicStyles.mapPreviewCoords}>  
+                            🧭 {selectedIncident.location.lat.toFixed(4)}, {selectedIncident.location.lng.toFixed(4)}
+                          </Text>
+                          <View style={dynamicStyles.mapOpenButton}>
+                            <Ionicons name="open-outline" size={16} color="#FFFFFF" />
+                            <Text style={dynamicStyles.mapOpenButtonText}>
+                              In Google Maps öffnen
+                            </Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
 
                 {/* Karte direkt im Detail Modal */}
                 <View style={dynamicStyles.detailCard}>
