@@ -2217,57 +2217,69 @@ const MainApp = () => {
     }
   };
 
-  // Get current location for incident reporting
+  // Get current location for incident reporting using Expo Location
   const getCurrentLocation = async () => {
     console.log('📍 GPS Button geklickt - starte Standortermittlung...');
     try {
+      // Import Expo Location dynamically
+      const Location = require('expo-location');
+      
+      console.log('📍 Bitte um Standort-Berechtigung...');
+      
       // Request location permission
-      if (typeof navigator !== 'undefined' && navigator.geolocation) {
-        console.log('📍 Navigator.geolocation verfügbar');
-        return new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const location = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                accuracy: position.coords.accuracy
-              };
-              console.log('✅ Standort erfolgreich ermittelt:', location);
-              setCurrentLocation(location);
-              resolve(location);
-            },
-            (error) => {
-              console.error('❌ GPS-Fehler:', error);
-              let errorMessage = 'Standort konnte nicht ermittelt werden.';
-              switch(error.code) {
-                case error.PERMISSION_DENIED:
-                  errorMessage = 'Standort-Berechtigung wurde verweigert.';
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  errorMessage = 'Standortinformationen nicht verfügbar.';
-                  break;
-                case error.TIMEOUT:
-                  errorMessage = 'Zeitüberschreitung bei Standortermittlung.';
-                  break;
-              }
-              Alert.alert('📍 GPS-Fehler', errorMessage + ' Bitte Adresse manuell eingeben.');
-              reject(error);
-            },
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('❌ Standort-Berechtigung verweigert');
+        Alert.alert(
+          '📍 Berechtigung erforderlich', 
+          'Bitte erlauben Sie der App den Zugriff auf Ihren Standort, um die GPS-Funktion zu nutzen.',
+          [
+            { text: 'Abbrechen', style: 'cancel' },
             { 
-              enableHighAccuracy: true, 
-              timeout: 15000, 
-              maximumAge: 30000 
+              text: 'Einstellungen', 
+              onPress: () => {
+                // Open app settings if possible
+                console.log('Öffne App-Einstellungen...');
+              }
             }
-          );
-        });
-      } else {
-        console.log('❌ Navigator.geolocation nicht verfügbar');
-        Alert.alert('📍 GPS nicht verfügbar', 'GPS-Funktion wird in diesem Browser nicht unterstützt. Bitte Adresse manuell eingeben.');
+          ]
+        );
         return null;
       }
+
+      console.log('✅ Standort-Berechtigung erteilt, ermittle Position...');
+      
+      // Get current position
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        timeout: 15000,
+      });
+
+      console.log('✅ Standort erfolgreich ermittelt:', location);
+      
+      const locationData = {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+        accuracy: location.coords.accuracy
+      };
+      
+      setCurrentLocation(locationData);
+      return locationData;
+      
     } catch (error) {
-      console.error('❌ Location permission error:', error);
-      Alert.alert('📍 Fehler', 'GPS-Zugriff fehlgeschlagen. Bitte Adresse manuell eingeben.');
+      console.error('❌ GPS-Fehler:', error);
+      
+      let errorMessage = 'Standort konnte nicht ermittelt werden.';
+      
+      if (error.code === 'E_LOCATION_SETTINGS_UNSATISFIED') {
+        errorMessage = 'GPS ist nicht aktiviert. Bitte aktivieren Sie GPS in den Geräte-Einstellungen.';
+      } else if (error.code === 'E_LOCATION_TIMEOUT') {
+        errorMessage = 'Zeitüberschreitung bei Standortermittlung. Versuchen Sie es erneut.';
+      } else if (error.code === 'E_LOCATION_UNAVAILABLE') {
+        errorMessage = 'Standort ist nicht verfügbar. Überprüfen Sie Ihre GPS-Verbindung.';
+      }
+      
+      Alert.alert('📍 GPS-Fehler', errorMessage + ' Bitte Adresse manuell eingeben.');
       return null;
     }
   };
