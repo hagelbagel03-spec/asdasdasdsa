@@ -535,8 +535,8 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
                 </View>
               )}
             </View>
-          ))}
-        </View>
+          ))
+        )}
       </ScrollView>
       
       <View style={styles.inputContainer}>
