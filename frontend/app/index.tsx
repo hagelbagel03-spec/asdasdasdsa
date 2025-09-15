@@ -5813,7 +5813,19 @@ const MainApp = () => {
           </Text>
         </TouchableOpacity>
         
-        {/* Nachrichten Tab komplett entfernt */}
+        <TouchableOpacity 
+          style={[dynamicStyles.tabItem, activeTab === 'messages' && dynamicStyles.tabItemActive]}
+          onPress={() => setActiveTab('messages')}
+        >
+          <Ionicons 
+            name={activeTab === 'messages' ? 'chatbubbles' : 'chatbubbles-outline'} 
+            size={24} 
+            color={activeTab === 'messages' ? '#FFFFFF' : colors.textMuted} 
+          />
+          <Text style={[dynamicStyles.tabLabel, activeTab === 'messages' && dynamicStyles.tabLabelActive]}>
+            Nachrichten
+          </Text>
+        </TouchableOpacity>
         
         <TouchableOpacity 
           style={[dynamicStyles.tabItem, activeTab === 'report' && dynamicStyles.tabItemActive]}
