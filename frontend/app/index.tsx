@@ -5936,10 +5936,7 @@ const MainApp = () => {
               </View>
 
               <View style={dynamicStyles.actionButtons}>
-                <TouchableOpacity style={[dynamicStyles.mapButton, { backgroundColor: colors.textMuted, opacity: 0.3 }]} disabled={true}>
-                  <Ionicons name="map" size={20} color="#FFFFFF" />
-                  <Text style={dynamicStyles.mapButtonText}>🗺️ Auf Karte anzeigen</Text>
-                </TouchableOpacity>
+                {/* Karten-Button komplett entfernt */}
 
                 {(!selectedIncident.assigned_to || selectedIncident.assigned_to === user?.id) && (
                   <TouchableOpacity style={dynamicStyles.takeButton} onPress={takeIncident}>
