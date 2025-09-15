@@ -752,6 +752,9 @@ const MainApp = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
   
+  // Incident Form States
+  const [sendingMessage, setSendingMessage] = useState(false);
+  
   // Notifications States
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
