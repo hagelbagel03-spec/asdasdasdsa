@@ -42,6 +42,7 @@ const DiscordMessages: React.FC<DiscordMessagesProps> = ({ user, token, selected
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const API_URL = "http://212.227.57.238:8001";
 
