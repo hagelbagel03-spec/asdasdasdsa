@@ -4687,6 +4687,7 @@ const MainApp = () => {
   // Render chat screen function - FIXED: Use DiscordMessages component
   const renderChatScreen = () => {
     console.log('🔍 renderChatScreen called - using DiscordMessages component');
+    console.log('👥 usersByStatus:', usersByStatus);
     
     return (
       <DiscordMessages 
@@ -4694,6 +4695,7 @@ const MainApp = () => {
         token={token || 'demo-token'}
         selectedChannel="allgemein"
         theme={{ colors, isDarkMode }}
+        usersByStatus={usersByStatus}
       />
     );
   };
