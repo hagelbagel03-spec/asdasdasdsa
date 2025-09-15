@@ -2346,6 +2346,44 @@ const MainApp = () => {
       color: '#FFFFFF',
       fontWeight: '600',
     },
+    
+    // User Selection Styles
+    userSelectionContainer: {
+      maxHeight: 400,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      marginTop: 8,
+    },
+    userSelectionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    userSelectionName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    userSelectionDetails: {
+      fontSize: 12,
+      color: colors.textMuted,
+    },
+    statusHeaderText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.textSecondary,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.background,
+    },
+    recipientHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
     headerButtons: {
       flexDirection: 'row',
       alignItems: 'center',
